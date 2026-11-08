@@ -8,6 +8,7 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 | Challenge| Writeup |
 |---|--|
 | authentification-1 | [writeup](breizhctf/authentification-1/writeup/README.md) |
+| authentification-2 | [writeup](breizhctf/authentification-2/writeup/README.md) |
 | do-you-have-good-eyes | [writeup](breizhctf/do-you-have-good-eyes/writeup/README.md) |
 | u-turn | [writeup](breizhctf/u-turn/writeup/README.md) |
 
