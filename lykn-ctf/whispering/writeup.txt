@@ -1,0 +1,133 @@
+================================================================================
+  Whispering - LYKNCTF 2026 (Crypto)
+================================================================================
+
+Challenge: A custom NTRU-based encryption scheme leaks the sums of the private
+polynomial coefficients through a side channel. Recover the algebraic signature
+used to derive the AES key and decrypt the flag.
+
+Flag: LYKNCTF{af9ccf9a4b1041a6840fa5ba9e732347}
+
+================================================================================
+1. Challenge Overview
+================================================================================
+
+The server exposes two endpoints:
+
+  /public.json       - NTRU parameters, public key h, encrypted flag (AES-CBC)
+  /side_channel.json - Sums of polynomial coefficients modulo 127
+
+The flag is AES-CBC encrypted with a key derived from the algebraic signature:
+
+  V = sum(f * g) mod q_prime
+
+If we can recover V we can decrypt the flag.
+
+================================================================================
+2. Code Analysis
+================================================================================
+
+2.1 NTRU Key Generation
+
+Two secret ternary polynomials f and g are generated with coefficients in
+{-1, 0, 1}. At least ceil(N/2) = 64 coefficients are non-zero.
+
+The public key is: h = g * f_inv (mod q, x^N - 1)
+
+2.2 Algebraic Signature
+
+The signature V = sum_k (f * g)[k] mod q_prime.
+
+Since poly_mult_mod computes convolution: (f * g)[k] = sum_{i+j=k mod N} f[i]*g[j],
+
+summing over all k gives every pairwise product exactly once:
+
+  V = sum_i sum_j f[i]*g[j] = (sum_i f[i]) * (sum_j g[j]) = sum_f * sum_g
+
+Therefore V = sum_f * sum_g mod q_prime.
+
+2.3 Key Derivation
+
+  ikm = V.to_bytes(4, "big") + N.to_bytes(2, "big") + q.to_bytes(2, "big") + salt
+  key = HKDF(master=ikm, key_len=32, salt=str(N).encode(), hashmod=SHA256)
+
+================================================================================
+3. Vulnerability - Side-Channel Leakage
+================================================================================
+
+The /side_channel.json endpoint reveals four values modulo 127:
+
+  f_even_sum_mod_127  - sum of f[i] for even i, mod 127
+  f_odd_sum_mod_127   - sum of f[i] for odd i, mod 127
+  g_even_sum_mod_127  - sum of g[i] for even i, mod 127
+  g_odd_sum_mod_127   - sum of g[i] for odd i, mod 127
+
+Because coefficients are -1/0/1, the sums fall in narrow ranges:
+
+  f_even: 64 coeffs, range [-64, +64]
+  f_odd:  63 coeffs, range [-63, +63]
+  g_even: 64 coeffs, range [-64, +64]
+  g_odd:  63 coeffs, range [-63, +63]
+
+Each range is smaller than the modulus 127, so the actual value is uniquely
+recoverable from its residue.
+
+================================================================================
+4. Exploitation
+================================================================================
+
+4.1 Recover Actual Sums
+
+  f_even: 122 > 64  => 122 - 127 = -5
+  f_odd:    6 <= 63 =>    6
+  g_even:   4 <= 64 =>    4
+  g_odd:  124 > 63  => 124 - 127 = -3
+
+  sum_f = -5 + 6 = +1
+  sum_g = 4 - 3 = +1
+
+4.2 Compute V
+
+  V = sum_f * sum_g mod 2053 = 1 * 1 mod 2053 = 1
+
+4.3 Decrypt
+
+  key = HKDF(ikm=1||127||2048||"lyknctf-2026", key_len=32, salt="127")
+  AES-CBC-Decrypt(key, iv, ciphertext) = flag
+
+================================================================================
+5. Reproduction Steps
+================================================================================
+
+  1. pip install pycryptodome requests
+
+  2. python3 solve.py <server_url>
+
+     Example:
+     python3 solve.py http://db9c3975-d3e7-4db6-bd74-3a509bdb8605.nip.io:8080
+
+  3. The script prints: LYKNCTF{af9ccf9a4b1041a6840fa5ba9e732347}
+
+================================================================================
+6. Tools Used
+================================================================================
+
+  - Python 3 with PyCryptodome (HKDF, AES-CBC, SHA-256)
+  - requests library for HTTP
+  - Manual code review
+
+================================================================================
+7. Lessons Learned
+================================================================================
+
+  - Side channels matter: even sums modulo a small prime suffice when the
+    value range is constrained.
+
+  - Convolution structure: V = sum(f*g) = sum(f) * sum(g) because the
+    convolution sum counts each product exactly once.
+
+  - NTRU lattice attacks were unnecessary; the side channel made this a
+    simple arithmetic recovery.
+
+  - Always check if leaked partial information (even modulo a small number)
+    is enough to reconstruct the secret deterministically.

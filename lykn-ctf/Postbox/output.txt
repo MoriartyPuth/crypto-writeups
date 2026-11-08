@@ -1,0 +1,21 @@
+Postbox — LYKNCTF 2026
+Challenge data from solved instance
+
+Instance URL: http://fd3c6858-d596-4f99-a1c8-6f259e915555.51.79.140.18.nip.io:8080
+
+Token:
+  IV: 706a0f2ea6a3a41003d93f8e5c1ec581
+  CT: 5b9c54da75f32fb2993a16186ca256bc7295183a21975c5a4fc32329e5eaffc24303b25564067dee72b4f3524ae269ddc6abe23fc32dc4b441e05d69a8ec92366440b4b27923607c77958bd996c2385ed64bc2f1876a0800a4366532d0bef737
+
+Recovered plaintext blocks:
+  Block 0: session: user=gu
+  Block 1: est; role=viewer
+  Block 2: ; flag=LYKNCTF{7
+  Block 3: bb9a077b7c947aaa
+  Block 4: b1dfa5b639b5778}
+  Block 5: [all padding 0x10 × 16]
+
+Full plaintext (80 bytes):
+  session: user=guest; role=viewer; flag=LYKNCTF{7bb9a077b7c947aaab1dfa5b639b5778}
+
+Flag: LYKNCTF{7bb9a077b7c947aaab1dfa5b639b5778}

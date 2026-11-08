@@ -1,36 +1,60 @@
-# BreizhCTF — Crypto writeups
+# Crypto writeups
 
-Solutions to two BreizhCTF crypto challenges, each with the original challenge files, a
-full writeup, a screenshot of the flag, and a self-contained solve script.
+A collection of cryptography CTF challenge writeups, grouped by event. Each entry has the
+reasoning, the bug, and a solve script (and, where useful, the original challenge files).
 
-| Challenge | Category | Bug in one line | Writeup |
-|---|---|---|---|
-| [`authentification-1`](authentification-1/writeup/README.md) | AES-GCM | Fixed nonce (reused keystream) **and** the auth tag is never checked | [writeup](authentification-1/writeup/README.md) |
-| [`do-you-have-good-eyes`](do-you-have-good-eyes/writeup/README.md) | Lattices / MLWE | Ring built as `x²⁵⁶ − 1` instead of `x²⁵⁶ + 1`, exposing the `x=1` homomorphism | [writeup](do-you-have-good-eyes/writeup/README.md) |
+## BreizhCTF
 
-## Flags
+| Challenge | Bug in one line | Writeup |
+|---|---|---|
+| authentification-1 | Fixed AES-GCM nonce (reused keystream) **and** the auth tag is never checked | [writeup](breizhctf/authentification-1/writeup/README.md) |
+| do-you-have-good-eyes | Ring built as `x²⁵⁶ − 1` instead of `x²⁵⁶ + 1`, exposing the `x=1` homomorphism | [writeup](breizhctf/do-you-have-good-eyes/writeup/README.md) |
 
-- `authentification-1` → `BZHCTF{ne_jamais_re-utiliser_le_nonce_e1d6ce70d3d1018c}`
-- `do-you-have-good-eyes` → `BZHCTF{trop_de_structure_tue_la_structure_79c145775373a9b8}`
+Flags: `BZHCTF{ne_jamais_re-utiliser_le_nonce_…}` · `BZHCTF{trop_de_structure_tue_la_structure_…}`
 
-## Layout
+## BroncoCTF
+
+| Challenge | Writeup |
+|---|---|
+| blorg multiplier | [writeup](broncoctf/blorg%20multiplier/README.md) |
+| consistently static pseudo random number generator | [writeup](broncoctf/consistently%20static%20pseudo%20random%20number%20generator/README.md) |
+| custom cipher | [writeup](broncoctf/custom%20cipher/README.md) |
+| emojibius | [writeup](broncoctf/emojibius/README.md) |
+| garbage in flag out | [writeup](broncoctf/garbage%20in%20flag%20out/README.md) |
+| grandmas secret | [writeup](broncoctf/grandmas%20secret/README.md) |
+| probably unbreakable | [writeup](broncoctf/probably%20unbreakable/README.md) |
+| shifting away | [writeup](broncoctf/shifting%20away/README.md) |
+
+## LYKN CTF
+
+| Challenge | Writeup |
+|---|---|
+| Hash & Dash | [writeup](lykn-ctf/Hash%20&%20Dash/README.md) |
+| Noisy broadcast | [writeup](lykn-ctf/Noisy%20broadcast/README.md) |
+| Postbox | [writeup](lykn-ctf/Postbox/README.md) |
+| Shortcut | [writeup](lykn-ctf/Shortcut/README.md) |
+| twelve steps | [writeup](lykn-ctf/twelve%20steps/README.md) |
+| whispering | [writeup](lykn-ctf/whispering/README.md) |
+
+## D³CTF
+
+| Challenge | Writeup |
+|---|---|
+| d3hferp | [writeup](d3ctf/d3hferp.md) |
+
+## DanteCTF
+
+| Challenge | Writeup |
+|---|---|
+| adventurers-knapsack | [writeup](dantectf/adventurers-knapsack.md) |
+
+---
+
+### Layout
 
 ```
-<challenge>/
-  challenge/   original challenge files as provided
-  writeup/     README.md + screenshot + solve script(s)
+<event>/<challenge>/        writeup README + solve script(s) (+ challenge/ files where provided)
 ```
 
-## Running the solvers
-
-**authentification-1** (needs `requests`):
-
-```bash
-python3 authentification-1/writeup/solve.py http://archive.cryptohack.org:61277
-```
-
-**do-you-have-good-eyes** (pure stdlib + the bundled `lll.py`):
-
-```bash
-python3 do-you-have-good-eyes/writeup/solve_eyes.py
-```
+Pulled together from the per-event writeup repos under
+[MoriartyPuth-Labs](https://github.com/MoriartyPuth-Labs).

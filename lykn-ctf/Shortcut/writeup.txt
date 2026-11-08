@@ -1,0 +1,80 @@
+================================================================================
+  LYKNCTF 2026 — CRYPTO: "Shortcut" — Writeup
+  Flag: LYKNCTF{95ce56e3bed44d16ba37ad2b839e984f}
+================================================================================
+
+1. CHALLENGE SUMMARY
+--------------------
+The server presents RSA public parameters (N, e), an AES-GCM encrypted flag
+with its nonce and tag, and three auxiliary "leakage" values. The goal is
+to recover the plaintext flag.
+
+The hint says: "Everyone likes shortcuts, including hastily built encryption
+systems built to meet deadlines. Sometimes the shortest path is the easiest
+to fall into a trap." This suggests a well-known, simple attack vector.
+
+2. VULNERABILITY ANALYSIS
+--------------------------
+The source code (gen_params.py) reveals the RSA key generation:
+
+    d_target_bits = int(bits * 0.205)       # ~315 bits for 1536-bit N
+    d = getPrime(d_target_bits)
+    wiener_bound = isqrt(isqrt(N)) // 3      # N^0.25 / 3
+    if d >= wiener_bound:
+        continue                             # keep trying until d is small
+
+The code EXPLICITLY ensures d < N^0.25 / 3, which is the exact condition
+for Wiener's continued-fraction attack. This is not a bug — it is the
+intended vulnerability.
+
+Wiener's theorem: If d < N^0.25 / 3, then given (N, e) the private exponent
+d can be recovered in polynomial time from the convergents of the continued
+fraction expansion of e/N.
+
+3. SOLUTION (Step by Step)
+---------------------------
+Step 1: Collect parameters from the server via netcat.
+
+Step 2: Run Wiener's attack.
+   - Compute the continued fraction expansion of e/N.
+   - Generate successive convergents k/d.
+   - For each convergent, compute phi = (e*d - 1) / k.
+   - Check if N - phi + 1 gives a perfect square discriminant.
+   - When it does, recover p, q, and the true d.
+
+Step 3: Recover the AES key.
+   - Compute lambda_n = lcm(p-1, q-1).
+   - Compute V_int = first 16 bytes of d in bytes.
+   - Compute H1 = SHA256(V_int), H2 = SHA256(S), H3 = SHA256(lambda_n).
+   - Derive the AES key via HKDF(SHA256) with salt "FastLane-RSA-2024"
+     and info "FastLane-AES-Key".
+
+Step 4: Decrypt the flag.
+   - Use AES-GCM with the recovered key, nonce, ciphertext + tag.
+
+4. ATTACK SCRIPT
+-----------------
+See solve.py in this directory for the full implementation.
+
+5. RESULTS
+-----------
+d = 25044949967447364321285713301673960792238611756004254741962
+    076924985769597564859208659311424249
+AES key = 02e02c15663a4fbf21f36690a0c6688e0201fa9a75cfbfa7f7c0763808952e24
+Flag = LYKNCTF{95ce56e3bed44d16ba37ad2b839e984f}
+
+6. TOOLS USED
+--------------
+- Python 3 with pycryptodome and cryptography libraries
+- Netcat (nc) for server interaction
+- Continued fraction algorithm (implemented from scratch)
+
+7. KEY TAKEAWAYS
+-----------------
+- Wiener's attack is always the first thing to try when e is large
+  (close to N in bit length).
+- The three leakages in the challenge were red herrings — the simplest
+  attack path ignored them entirely.
+- Never overthink CTF challenges; the hint "beginner" and "shortcut"
+  directly pointed to this classic attack.
+================================================================================

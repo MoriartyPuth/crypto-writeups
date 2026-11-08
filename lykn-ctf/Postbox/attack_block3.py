@@ -1,0 +1,54 @@
+"""
+Recover block 3 of the Postbox padding oracle challenge.
+"""
+import requests
+import time
+
+BASE = "http://054bf5a0-3ac6-45cb-a470-fff233761ee6.51.79.140.18.nip.io:8080"
+IV = "a2d8cafad1a2978d63f63f776dba1ff2"
+CT = ("10a017c795bda354b5d6b0a375a69965"
+      "0b329323a830f821b8aae00001580b74"
+      "75894bfbb36bc2b63e8607b200b9324c"
+      "46a36d43fc990556cb39474f6d6a8382"
+      "a2eea270d9dae2e97cc84d02d4fcdb0a"
+      "1064930c62699e1b81cc8fc7680a4c21")
+
+def oracle(iv_hex, ct_hex):
+    try:
+        r = requests.post(f"{BASE}/decrypt", json={"iv": iv_hex, "ciphertext": ct_hex}, timeout=10)
+        if r.status_code == 200:
+            data = r.json()
+            return data.get("ok") is True
+    except:
+        pass
+    return False
+
+# Block 3: prev = block2, ct_block = block3
+prev_hex = "75894bfbb36bc2b63e8607b200b9324c"
+ct_block_hex = "46a36d43fc990556cb39474f6d6a8382"
+
+prev = bytes.fromhex(prev_hex)
+inter = bytearray(16)
+
+for pos in range(15, -1, -1):
+    pad = 16 - pos
+    t0 = time.time()
+    found = None
+    for g in range(256):
+        tweak = bytearray(16)
+        for j in range(pos + 1, 16):
+            tweak[j] = inter[j] ^ pad
+        tweak[pos] = g
+        if oracle(tweak.hex(), ct_block_hex):
+            found = g
+            break
+    dt = time.time() - t0
+    if found is not None:
+        inter[pos] = found ^ pad
+        print(f"byte {pos:2d}/15: 0x{found:02x} -> plaintext 0x{inter[pos]:02x} [{16-pos}/16] {dt:.1f}s")
+    else:
+        print(f"byte {pos:2d}/15: NO MATCH [{16-pos}/16] {dt:.1f}s")
+
+plaintext = bytes(a ^ b for a, b in zip(prev, inter))
+print(f"\nBlock 3 plaintext hex: {plaintext.hex()}")
+print(f"Block 3 plaintext str: {plaintext.decode(errors='replace')}")
