@@ -5,13 +5,11 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 
 ## BreizhCTF
 
-| Challenge | Bug in one line | Writeup |
-|---|---|---|
-| authentification-1 | Fixed AES-GCM nonce (reused keystream) **and** the auth tag is never checked | [writeup](breizhctf/authentification-1/writeup/README.md) |
-| do-you-have-good-eyes | Ring built as `x²⁵⁶ − 1` instead of `x²⁵⁶ + 1`, exposing the `x=1` homomorphism | [writeup](breizhctf/do-you-have-good-eyes/writeup/README.md) |
-| u-turn | "Hash" is a linear map `h = A·x mod 256` over a tiny `x` — invert with LLL/CVP | [writeup](breizhctf/u-turn/writeup/README.md) |
-
-Flags: `BZHCTF{ne_jamais_re-utiliser_le_nonce_…}` · `BZHCTF{trop_de_structure_tue_la_structure_…}` · `BZHCTF{7ffbeebcd72be3dc}`
+| Challenge| Writeup |
+|---|--|
+| authentification-1 | [writeup](breizhctf/authentification-1/writeup/README.md) |
+| do-you-have-good-eyes | [writeup](breizhctf/do-you-have-good-eyes/writeup/README.md) |
+| u-turn | [writeup](breizhctf/u-turn/writeup/README.md) |
 
 ## BroncoCTF
 
@@ -48,14 +46,3 @@ Flags: `BZHCTF{ne_jamais_re-utiliser_le_nonce_…}` · `BZHCTF{trop_de_structure
 | Challenge | Writeup |
 |---|---|
 | adventurers-knapsack | [writeup](dantectf/adventurers-knapsack.md) |
-
----
-
-### Layout
-
-```
-<event>/<challenge>/        writeup README + solve script(s) (+ challenge/ files where provided)
-```
-
-Pulled together from the per-event writeup repos under
-[MoriartyPuth-Labs](https://github.com/MoriartyPuth-Labs).
