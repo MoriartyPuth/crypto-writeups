@@ -17,6 +17,7 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 | Challenge | Writeup |
 |---|---|
 | Bespoke Padding | [writeup](cryptohack/bespoke-padding/writeup/README.md) |
+| RSA Backdoor Viability | [writeup](cryptohack/rsa-backdoor-viability/writeup/README.md) |
 
 ## BroncoCTF
 
