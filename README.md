@@ -12,6 +12,12 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 | do-you-have-good-eyes | [writeup](breizhctf/do-you-have-good-eyes/writeup/README.md) |
 | u-turn | [writeup](breizhctf/u-turn/writeup/README.md) |
 
+## CryptoHack
+
+| Challenge | Writeup |
+|---|---|
+| Bespoke Padding | [writeup](cryptohack/bespoke-padding/writeup/README.md) |
+
 ## BroncoCTF
 
 | Challenge | Writeup |
