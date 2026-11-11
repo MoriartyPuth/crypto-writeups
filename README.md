@@ -22,6 +22,7 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 | Let's Decrypt | [writeup](cryptohack/lets-decrypt/writeup/README.md) |
 | Blinding Light | [writeup](cryptohack/blinding-light/writeup/README.md) |
 | Vote for Pedro | [writeup](cryptohack/vote-for-pedro/writeup/README.md) |
+| Let's Decrypt Again | [writeup](cryptohack/lets-decrypt-again/writeup/README.md) |
 
 ## BroncoCTF
 
