@@ -20,6 +20,7 @@ reasoning, the bug, and a solve script (and, where useful, the original challeng
 | RSA Backdoor Viability | [writeup](cryptohack/rsa-backdoor-viability/writeup/README.md) |
 | Null or Never | [writeup](cryptohack/null-or-never/writeup/README.md) |
 | Let's Decrypt | [writeup](cryptohack/lets-decrypt/writeup/README.md) |
+| Blinding Light | [writeup](cryptohack/blinding-light/writeup/README.md) |
 
 ## BroncoCTF
 
